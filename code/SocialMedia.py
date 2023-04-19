@@ -22,7 +22,6 @@ def random_graph_revised(n, m):
 #G = random_graph_revised(n, m)
 
 ### social media 
-### social media 
 class SocialMedia:
     def __init__(self, n = 100, m = 400):
         self.p = .5
@@ -32,21 +31,17 @@ class SocialMedia:
         self.l = np.random.randint(2, 10, n)
         self.G = random_graph_revised(self.n,self.m) 
         ### need to make sure there is no node that has zero out degree. 
-        
         self.O = np.random.uniform(-1, 1, self.n)
         self.Opinions_db = {"Time_0": copy.deepcopy(self.O)}#pd.DataFrame(self.O, columns= ["Time_0"]) ### uniform distribution
-        self.Message_db = pd.DataFrame(columns = ["original_poster", "rt_poster","content", "rt_status"])
+        self.Messege_db = pd.DataFrame(columns = ["original_poster", "rt_poster","content", "rt_status"])
+        self.Messege_db["rt_status"] = self.Messege_db["rt_status"].astype(bool) #<--deal with warning
         self.Network_db = {"Time_0": list(self.G.edges())}
         self.ME_db = pd.DataFrame(columns = ["uid", "Time", "index", "effects"])
-        self.Config_db = {}
-        #self.audience = audience
-        #self.media_id = ["mainstream_media", "liberal_media", "conservative_media", "extreme_liberal_media", "extreme_conservative_media"]
+        self.ME_db["effects"] = self.ME_db["effects"].astype(bool) #<--deal with warning
 
-    def record_sub(self, media_audience):
-        return media_audience
-
+        
     def screen_size(self, uid):
-        l = self.l[uid] + np.random.randint(-2, 2) ## hidden parameter
+        l = self.l[uid] + np.random.randint(-2, 3) ## hidden parameter
         return l
             
     def make_screen(self, uid, l, sub, include_media = True):
@@ -54,9 +49,9 @@ class SocialMedia:
         if include_media :
             friends = friends + sub
         #print
-        repost_by_friend = self.Message_db.rt_poster.isin(friends)
+        repost_by_friend = self.Messege_db.rt_poster.isin(friends)
         #print(repost_by_friend)
-        screen = self.Message_db[repost_by_friend].tail(l)
+        screen = self.Messege_db[repost_by_friend].tail(l)
         if len(screen)>0:
             return screen
         else:
@@ -68,24 +63,14 @@ class SocialMedia:
     def get_recent_neighors(self, uid):
         return self.G.successors(uid)
     
-    def get_recomm_friends(self, uid, media_ids, eta):
-        me_and_friends = set(self.G.successors(uid)).union({uid}).union(media_ids) ### No rewiring of media
-        recent = self.Message_db[~self.Message_db.rt_poster.isin(me_and_friends)].tail(self.l[uid]*3) ### hidden parameter
-        if len(recent) >0:
-            recent["fri_or_foe"] = np.where(np.abs(recent.content.values-self.O[uid]) < eta, True, False)
-            recommended = recent[recent.fri_or_foe == True]
-            if len(recommended) > 0:
-                return recommended
+    def add_edge(self, uid, new_fri):
+        self.G.add_edge(uid, new_fri)
 
-
-    def add_edge(self, uid, target):
-        self.G.add_edge(uid, target)
-
-    def delete_edge(self, uid, target):
-        self.G.remove_edge(uid, target)
+    def remove_edge(self, uid, foe_target):
+        self.G.remove_edge(uid, foe_target)
         
-    def add_message(self, messege):
-        self.Message_db = pd.concat([self.Message_db,messege], ignore_index = True, axis = 0)
+    def add_messege(self, messege):
+        self.Messege_db = pd.concat([self.Messege_db,messege], ignore_index = True, axis = 0)
     #########    
     def update_Opinions_db(self, uid, new_o, t):
         if new_o:
@@ -96,7 +81,7 @@ class SocialMedia:
     def update_Network_db(self, t):
         self.Network_db["Time_"+str(t+1)] = copy.deepcopy(list(self.G.edges())) 
     
-    def update_ME_db(self,t, uid, fri, foe):
+    def update_ME_db(self, t, uid, fri, foe):
         if fri is not None:
             #print(fri)
             fri = fri.reset_index()
@@ -116,9 +101,4 @@ class SocialMedia:
             self.ME_db = pd.concat([self.ME_db, foe_record], ignore_index= True)
         #return fri_record, foe_record
         
-    def find_media(self, screen):
-        if screen is not None:
-            bool = (screen.original_poster.str.contains("media") | screen.rt_poster.str.contains("media"))
-            found = screen[bool]
-            return found
            
