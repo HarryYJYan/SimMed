@@ -33,8 +33,8 @@ class SocialMedia:
         ### need to make sure there is no node that has zero out degree. 
         self.O = np.random.uniform(-1, 1, self.n)
         self.Opinions_db = {"Time_0": copy.deepcopy(self.O)}#pd.DataFrame(self.O, columns= ["Time_0"]) ### uniform distribution
-        self.Messege_db = pd.DataFrame(columns = ["original_poster", "rt_poster","content", "rt_status"])
-        self.Messege_db["rt_status"] = self.Messege_db["rt_status"].astype(bool) #<--deal with warning
+        self.Message_db = pd.DataFrame(columns = ["original_poster", "rt_poster","content", "rt_status"])
+        self.Message_db["rt_status"] = self.Message_db["rt_status"].astype(bool) #<--deal with warning
         self.Network_db = {"Time_0": list(self.G.edges())}
         self.ME_db = pd.DataFrame(columns = ["uid", "Time", "index", "effects"])
         self.ME_db["effects"] = self.ME_db["effects"].astype(bool) #<--deal with warning
@@ -49,9 +49,9 @@ class SocialMedia:
         if include_media :
             friends = friends + sub
         #print
-        repost_by_friend = self.Messege_db.rt_poster.isin(friends)
+        repost_by_friend = self.Message_db.rt_poster.isin(friends)
         #print(repost_by_friend)
-        screen = self.Messege_db[repost_by_friend].tail(l)
+        screen = self.Message_db[repost_by_friend].tail(l)
         if len(screen)>0:
             return screen
         else:
@@ -69,8 +69,8 @@ class SocialMedia:
     def remove_edge(self, uid, foe_target):
         self.G.remove_edge(uid, foe_target)
         
-    def add_messege(self, messege):
-        self.Messege_db = pd.concat([self.Messege_db,messege], ignore_index = True, axis = 0)
+    def add_message(self, message):
+        self.Message_db = pd.concat([self.Message_db,message], ignore_index = True, axis = 0)
     #########    
     def update_Opinions_db(self, uid, new_o, t):
         if new_o:

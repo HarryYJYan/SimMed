@@ -12,7 +12,7 @@ class MassMedia():
         self.init_subs = self.split_list()#self.random_split() #
         self.subs = {self.mids[i]:self.init_subs[i] for i in range(n)} #self.split_list()
         self.Subs_db = {"Time_0": copy.deepcopy(self.subs)}
-        #self.messege_db = {"Time_0": {self.mids[i]:[] for i in range(n)}}
+        #self.message_db = {"Time_0": {self.mids[i]:[] for i in range(n)}}
         
     def init_share(self):
         holders = np.ones (self.agents)
@@ -39,7 +39,7 @@ class MassMedia():
         sizes = np.int32(np.ceil(np.array(self.shares)*self.s))
         return [np.random.choice(aud_ids, size, replace= False) for size in sizes ]
     
-    def media_messege(self, mid, Os, d = .25):
+    def media_message(self, mid, Os, d = .25):
         if np.random.rand() < self.p:
             recent = self.Subs_db[list(self.Subs_db.keys())[-1]]
             v = np.mean(Os[recent[mid]]) + d*(np.random.rand() -1)

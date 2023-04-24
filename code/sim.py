@@ -4,13 +4,13 @@ from User import User
 from Media import MassMedia
 from tqdm import tqdm
 
-def send_media_messege(sm, md, Os, include_media = True):
+def send_media_message(sm, md, Os, include_media = True):
     if include_media:
         for mid in md.mids:
             #print(med_ms)
-            ms = md.media_messege(mid, Os)
+            ms = md.media_message(mid, Os)
             if ms is not None:
-                sm.add_messege(ms) 
+                sm.add_message(ms) 
 
 def sample_user(sm):
     uid = np.random.randint(sm.n)
@@ -41,16 +41,16 @@ def update_network(user, prob_rewire, fri, foe, md, sm, mix = False):
                 md.cancel(user.uid, foe_target)
                 #print(user.uid, "cancel" , foe_target)
                 if not mix:
-                    fri_target = user.find_friend(fri, sm.Messege_db, output = "media")
+                    fri_target = user.find_friend(fri, sm.Message_db, output = "media")
                     md.subscribe(user.uid, fri_target)
             else:
                 sm.remove_edge(user.uid, foe_target)
                 #print(user.uid, "unfollow" , foe_target)
                 if not mix:
-                    fri_target = user.find_friend(fri, sm.Messege_db, output = "agent")
+                    fri_target = user.find_friend(fri, sm.Message_db, output = "agent")
                     sm.add_edge(user.uid, fri_target)
             if mix:
-                fri_target = user.find_friend(fri, sm.Messege_db, output = "mix", print_method = False)
+                fri_target = user.find_friend(fri, sm.Message_db, output = "mix", print_method = False)
                 if str(fri_target)[0] == "m":
                     md.subscribe(user.uid, fri_target)
                 else:
@@ -63,12 +63,12 @@ def sim(p, s, N, mix = False, include_media = True, effect_record = True, n = 10
     md = MassMedia(p, s, N)
     for t in tqdm(np.arange(T), desc = "Run: "):
         Os = sm.Opinions_db[list(sm.Opinions_db.keys())[-1]]
-        send_media_messege(sm, md, Os, include_media)
+        send_media_message(sm, md, Os, include_media)
         uid, l = sample_user(sm)
         if uid:
             subs = md.find_subs(uid)
             user, fri, foe, new_o, new_post = user_activity(uid, sm, md, eta, miu, l, subs, md.mids, rand, include_media)
-            sm.add_messege(new_post)
+            sm.add_message(new_post)
             sm.update_Opinions_db(uid, new_o, t)
             if effect_record == True:
                 sm.update_ME_db(t, uid, fri, foe)

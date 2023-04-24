@@ -25,7 +25,7 @@ for i in tqdm(range(REP), desc= "Repitition"):
     with open(cwd + "/Meta/screen_size.csv", "a") as f:
         writer = csv.writer(f, delimiter=',')
         writer.writerow(sm.l)
-    sm.Messege_db.to_parquet(cwd + "/Messages/"+ lab + ".parquet")
+    sm.Message_db.to_parquet(cwd + "/Messages/"+ lab + ".parquet")
     pd.DataFrame(sm.Opinions_db).to_parquet(cwd + "/Opinions/"+ lab + ".parquet")
     sm.ME_db.to_parquet(cwd + "/Effects/"+ lab + ".parquet")
     with open(cwd + "/Networks/{}.json".format(lab), "w") as f:
