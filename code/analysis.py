@@ -1,14 +1,16 @@
+import os
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 from sim import sim
 #from Media import mass_media
-import os, numpy as np, pandas as pd, json as js, csv
+import numpy as np, pandas as pd, json as js, csv
 from tqdm import tqdm, tgrange
-from itertools import product
+#from itertools import product
 
 #
-ROOT_DIR = "/Users/harryan/Desktop/sim_data/"
+ROOT_DIR = "/N/slate/harryan/sim_data"
 
-def getdir(N,p,s):
-    cwd = ROOT_DIR + f"N{str(N)}/p{str(p)[-1]}s{str(s)[-1]}" 
+def getdir(N,s,eta):
+    cwd = ROOT_DIR + f"N{str(N)}/s{str(s)[-1]}eta{str(eta)[-1]}" 
     if not os.path.exists(cwd):
         os.makedirs(cwd)
         for i in ["Messages", "Opinions", "Networks", "Meta", "Effects", "Subscription"]:
@@ -16,13 +18,13 @@ def getdir(N,p,s):
     return cwd
 
 para = np.arange(1, 10, 2)/10
-paras = list(product(para, para))
+paras = [(0.5, i) for i in para]
 
 #for para in tqdm(para_list, desc= "Run"):
     #c, p, s = para
     #media_para, 
 rep = 100
-N = 1
+N = 3
 
 class NumpyEncoder(js.JSONEncoder):
     def default(self, obj):
@@ -31,11 +33,11 @@ class NumpyEncoder(js.JSONEncoder):
         return js.JSONEncoder.default(self, obj)
 
 
-for p,s in paras:
-    cwd = getdir(N, p, s)
-    for i in tqdm(range(rep), desc= f"Rep p{str(p)} s{str(s)}"):
+for s, eta in paras:
+    cwd = getdir(N, s, eta)
+    for i in tqdm(range(rep), desc= f"Rep p{str(eta)} s{str(s)}"):
         lab = str(i)
-        sm, md = sim(p, s, N, include_media = True, effect_record= True) ## Baseline
+        sm, md = sim(s, N, eta, include_media = True, effect_record= True) 
         with open(cwd + "/Meta/screen_size.csv", "a") as f:
             writer = csv.writer(f, delimiter=',')
             writer.writerow(sm.l)

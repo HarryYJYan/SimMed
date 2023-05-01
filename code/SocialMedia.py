@@ -1,3 +1,5 @@
+import os
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import random
 import networkx as nx, numpy as np, pandas as pd
 import copy
@@ -100,5 +102,6 @@ class SocialMedia:
             foe_record = foe[["uid", "Time", "index", "effects"]]
             self.ME_db = pd.concat([self.ME_db, foe_record], ignore_index= True)
         #return fri_record, foe_record
+        
         
            

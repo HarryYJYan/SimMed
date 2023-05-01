@@ -1,3 +1,5 @@
+import os
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import numpy as np, pandas as pd
 import copy
 
@@ -12,13 +14,15 @@ class MassMedia():
         self.init_subs = self.split_list()#self.random_split() #
         self.subs = {self.mids[i]:self.init_subs[i] for i in range(n)} #self.split_list()
         self.Subs_db = {"Time_0": copy.deepcopy(self.subs)}
-        #self.message_db = {"Time_0": {self.mids[i]:[] for i in range(n)}}
+        #self.Message_db = {"Time_0": {self.mids[i]:[] for i in range(n)}}
         
     def init_share(self):
         holders = np.ones (self.agents)
         splits = np.random.choice(np.arange(1,self.agents), self.n-1, replace=False)
         splits = [0] + list(sorted(splits)) + [self.agents]
-        return [int(np.sum(holders[splits[i]:splits[i+1]])) for i in range(self.n)] 
+        res = [int(np.sum(holders[splits[i]:splits[i+1]])) for i in range(self.n)]
+        #print(res)
+        return res 
     
     def split_list(self): ### No overlap
         start = 0
@@ -29,8 +33,9 @@ class MassMedia():
         sizes = np.int32(np.ceil(np.array(self.shares)*self.s))
         for size in sizes:
             end += size
-            output.append(aud_ids[start:end])
+            output.append(aud_ids[start:end].tolist())
             start = end
+        #print(output)
         return output
     
     def random_split(self): ## With possible overlap
@@ -42,25 +47,33 @@ class MassMedia():
     def media_message(self, mid, Os, d = .25):
         if np.random.rand() < self.p:
             recent = self.Subs_db[list(self.Subs_db.keys())[-1]]
-            v = np.mean(Os[recent[mid]]) + d*(np.random.rand() -1)
+            v = np.mean(Os[recent[mid]]) + d*(np.random.rand()*2 -1)
             post = pd.DataFrame({"original_poster": [mid], "rt_poster": [mid], "content": [v], "rt_status":[False]})
             return post
         else:
             return None
     
     def find_subs(self, uid):
+        #print(self.subs)
         subs = [k for k, v in self.subs.items() if uid in v]
         return subs
         
     def cancel(self, uid, foe_target):
-        self.subs[foe_target] = self.subs[foe_target][self.subs[foe_target] !=uid]
+        self.subs[foe_target].remove(uid)
     
     def subscribe(self, uid, fri_target):
         if uid not in self.subs[fri_target]:
-            self.subs[fri_target] = np.append(self.subs[fri_target], uid)
+            self.subs[fri_target].append(uid)
 
     def update_Sub_DB(self, t):
+        #print(self.subs)
         self.Subs_db["Time_{}".format(t)] =  copy.deepcopy(self.subs)
+
+
+        
+
+
+        
 
 
         

@@ -1,0 +1,4 @@
+NameError in file /geode2/home/u030/harryan/BigRed200/SimMed/code/run.smk, line 47:
+name 'output_dir' is not defined
+  File "/geode2/home/u030/harryan/BigRed200/SimMed/code/run.smk", line 47, in <module>
+  File "/geode2/home/u030/harryan/BigRed200/SimMed/code/run.smk", line 47, in <listcomp>

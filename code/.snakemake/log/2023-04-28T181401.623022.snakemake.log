@@ -1,0 +1,3 @@
+TypeError in file /geode2/home/u030/harryan/BigRed200/SimMed/code/run.smk, line 6:
+unsupported operand type(s) for /: 'list' and 'int'
+  File "/geode2/home/u030/harryan/BigRed200/SimMed/code/run.smk", line 6, in <module>

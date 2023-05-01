@@ -1,3 +1,5 @@
+import os
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
 import numpy as np, pandas as pd
 
 class User():
@@ -74,9 +76,9 @@ class User():
             candidate =  self.screen_candidates(original_posters, output= output)
             return candidate
         
-    def friend_recommend(self, messege_db, output= "mix"):
-        recent = messege_db[~messege_db.rt_poster.isin(self.me_fri_subs)].tail(21) ### hidden parameter
-        #print("Recent messege board", recent)
+    def friend_recommend(self, Message_db, output= "mix"):
+        recent = Message_db[~Message_db.rt_poster.isin(self.me_fri_subs)].tail(21) ### hidden parameter
+        #print("Recent message board", recent)
         if len(recent) >0:
             #recent["fri_or_foe"] = np.where(np.abs(recent.content.values-self.o) < self.eta, True, False)
             recommend = self.find_fri(recent) #recent[recent.fri_or_foe == True]
@@ -104,13 +106,13 @@ class User():
                 target_foe = np.random.choice(foe["rt_poster"])
                 return target_foe
     
-    def find_friend(self, fri, messege_db, output, print_method =False):
+    def find_friend(self, fri, Message_db, output, print_method =False):
         new_friend = None
         if fri is not None and len(fri) >0:
             new_friend = self.friend_repost(fri, output = output)
             method = "repost"
         if new_friend is None:
-            new_friend = self.friend_recommend(messege_db, output = output)
+            new_friend = self.friend_recommend(Message_db, output = output)
             method = "recommend"
         if new_friend is None:
             new_friend = self.friend_random(output = output)
