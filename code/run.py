@@ -5,17 +5,17 @@ from sim import sim
 import argparse
 
 ROOT_DIR = "/N/slate/harryan/sim_data"
-def run(s, N, eta, rep): #**kargs
+def run(s, N, eta, start, end): #**kargs
     cwd = ROOT_DIR + f"/N{str(N)}/s{str(s)[-1]}eta{str(eta)[-1]}/" 
     if not os.path.exists(cwd):
-        os.makedirs(cwd)
+        os.makedirs(cwd, exist_ok=True)
         for folder in ["messages", "opinions", "networks", "effects", "screensizes", "subscriptions"]:
             os.makedirs(cwd+ folder)
-    for iteration in range(rep):
+    for iteration in range(start, end):
         if N != 0:
             sm, md = sim(s, N, eta)
         else:
-            sm, md = sim(s, 1, eta, include_media= False)#kargs
+            sm, md = sim(0, 1, eta, include_media= False)#kargs
         opinions = pd.DataFrame(sm.Opinions_db)
         opinions.to_parquet(f"{cwd}/opinions/{str(iteration)}_opinions.parquet")
         ##
@@ -47,8 +47,9 @@ if __name__ == '__main__':
     parser.add_argument('s', type=float, help='Share')
     parser.add_argument('N', type=int, help='Number of media')
     parser.add_argument('eta', type=float, help='Tolerence level')
-    parser.add_argument('rep', type=int, help='Repition')
+    parser.add_argument('start', type=int, default=0, help='Repition start')
+    parser.add_argument('end', type=int, help='Repition end')
 
     # Parse the command-line arguments
     args = parser.parse_args()
-    res = run(args.s, args.N, args.eta, args.rep)
+    res = run(args.s, args.N, args.eta, args.start, args.end)

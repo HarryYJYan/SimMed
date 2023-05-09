@@ -1,28 +1,22 @@
 #!/bin/bash
 #SBATCH -A general
 #SBATCH -p gpu
-#SBATCH -J SM
-#SBATCH -o SM%j.txt
-#SBATCH -e SM%j.err
+#SBATCH -J Compile
+#SBATCH -o Compile%j.txt
+#SBATCH -e Compile%j.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=harryan@iu.edu
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gpus-per-node=1
 #SBATCH --mem=8G
-#SBATCH --time=4:00:00
-
+#SBATCH --time=2:00:00
 
 errcho(){ >&2 echo $@; }
-source /N/u/harryan/BigRed200/mambaforge/etc/profile.d/conda.sh
-conda activate SimMed
+source /N/u/harryan/Carbonate/mambaforge/etc/profile.d/conda.sh
+conda activate SimMedEffects
 ####################################################################
-cd /N/u/harryan/BigRed200/SimMed/code
 s=$1
-N=$2
-e=$3
-st=$4
-en=$5
-
-
-srun --exclusive python run.py $s $N $e $st $en
+e=$2
+cd /N/u/harryan/BigRed200/SimMed/individual
+srun python run_cp_indi.py $s $e 

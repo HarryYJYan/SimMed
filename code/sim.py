@@ -23,7 +23,7 @@ def sim(s, N, eta,
         Os = sm.Opinions_db[list(sm.Opinions_db.keys())[-1]]
         send_media_message(sm, md, Os, include_media)
         uid, l = sample_user(sm)
-        if uid:
+        if uid is not None:
             #print(uid, l)
             subs = md.find_subs(uid)
             user, fri, foe, new_o, new_post = user_activity(uid, sm, md, eta, miu, l, subs, rand, include_media)
