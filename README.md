@@ -84,9 +84,17 @@ SimMed/
 │   ├── baseline.py         # Baseline simulations (no media)
 │   ├── vis.py              # Visualization functions
 │   └── run.py              # Batch simulation runner
+├── paper/                   # LaTeX paper (synced with Overleaf)
+│   ├── main.tex            # Main paper document
+│   ├── ref.bib             # Bibliography
+│   ├── Figures/            # Paper figures
+│   ├── Tables/             # Paper tables
+│   └── .cursor/            # Cursor LaTeX configuration
 ├── individual/             # Individual-level analysis tools
 ├── analysis.ipynb          # Main analysis notebook
 ├── networks.ipynb          # Network analysis notebook
+├── PARAMETERS.md           # Parameter documentation
+├── ANALYSIS_GUIDE.md       # Analysis methodology
 └── prototype/              # Early development prototypes
 ```
 
@@ -227,6 +235,37 @@ Data is stored in analysis-friendly formats:
 - Pandas DataFrames for opinion and message data
 - NetworkX graphs for social structure
 - JSON for metadata and configurations
+
+## Paper Development Workflow
+
+### LaTeX Paper Management
+
+The `paper/` directory contains the research paper synchronized with Overleaf:
+
+```bash
+# Navigate to paper directory
+cd paper/
+
+# Pull latest changes from Overleaf (if collaborating)
+git pull origin main
+
+# Edit locally with Cursor LaTeX support
+# - AI-assisted writing and formatting
+# - Intelligent LaTeX autocomplete
+# - Citation management
+
+# Commit and push changes to Overleaf
+git add .
+git commit -m "Update methodology section"
+git push origin main
+```
+
+### Cursor LaTeX Features
+
+- **Scientific Writing Assistant**: AI help for clarity and coherence
+- **LaTeX Syntax Support**: Intelligent autocomplete and error checking
+- **Reference Management**: Citation formatting assistance
+- **Table/Figure Editing**: Easy manipulation of complex LaTeX structures
 
 ## Computational Considerations
 
