@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
         "./individual"
+    ],
+    "cursorpyright.analysis.extraPaths": [
+        "./individual"
     ]
 }
